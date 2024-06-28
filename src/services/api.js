@@ -1,7 +1,13 @@
 import axios from "axios";
 
+// Determine base URL based on environment
+const baseURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://nicole-calendar-app.netlify.app/"; // Replace with your production URL on Netlify
+
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL,
 });
 
 export const fetchAppointments = async () => {
