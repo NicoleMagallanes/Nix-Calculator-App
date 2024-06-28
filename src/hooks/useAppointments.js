@@ -1,22 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import axios from "axios";
-
-const fetchAppointments = async () => {
-  const { data } = await axios.get("http://localhost:3000/appointments");
-  return data;
-};
+import {
+  fetchAppointments,
+  createAppointment,
+  updateAppointment,
+  deleteAppointment,
+} from "../services/api";
 
 const useAppointments = () => {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery(
-    "appointments",
-    fetchAppointments
-  );
+  const {
+    data: appointments,
+    isLoading,
+    isError,
+  } = useQuery("appointments", fetchAppointments);
 
   const addAppointment = useMutation(
     (newAppointment) =>
-      axios.post("http://localhost:3000/appointments", newAppointment),
+      createAppointment(newAppointment).then((res) => res.data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("appointments");
@@ -26,7 +27,7 @@ const useAppointments = () => {
 
   const updateAppointment = useMutation(
     (id, updatedFields) =>
-      axios.patch(`http://localhost:3000/appointments/${id}`, updatedFields),
+      updateAppointment(id, updatedFields).then((res) => res.data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("appointments");
@@ -34,17 +35,14 @@ const useAppointments = () => {
     }
   );
 
-  const deleteAppointment = useMutation(
-    (id) => axios.delete(`http://localhost:3000/appointments/${id}`),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("appointments");
-      },
-    }
-  );
+  const deleteAppointment = useMutation((id) => deleteAppointment(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries("appointments");
+    },
+  });
 
   return {
-    appointments: data,
+    appointments,
     isLoading,
     isError,
     addAppointment: addAppointment.mutate,
@@ -53,4 +51,4 @@ const useAppointments = () => {
   };
 };
 
-export { useAppointments };
+export default useAppointments;

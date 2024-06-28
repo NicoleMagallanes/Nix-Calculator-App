@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAppointments } from "../hooks/useAppointments";
+import useAppointments from "../hooks/useAppointments";
 import AppointmentForm from "../components/AppointmentForm";
 import AppointmentList from "../components/AppointmentList";
 
@@ -7,28 +7,31 @@ const Appointments = () => {
   const {
     appointments,
     isLoading,
+    isError,
     addAppointment,
     updateAppointment,
     deleteAppointment,
   } = useAppointments();
+
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("date");
 
-  const filteredAppointments = (appointments || [])
-    .filter((appointment) => {
+  const filteredAppointments = appointments
+    ?.filter((appointment) => {
       if (filter === "all") return true;
       return appointment.status === filter;
     })
-    .filter((appointment) => {
-      return appointment.name.toLowerCase().includes(search.toLowerCase());
-    })
+    .filter((appointment) =>
+      appointment.name.toLowerCase().includes(search.toLowerCase())
+    )
     .sort((a, b) => {
       if (sort === "date") return new Date(a.date) - new Date(b.date);
       return a.name.localeCompare(b.name);
     });
 
   if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error fetching appointments.</p>;
 
   return (
     <div className="p-4 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
