@@ -4,7 +4,7 @@ import axios from "axios";
 const baseURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://nicole-calendar-app.netlify.app"; // Remove the trailing slash
+    : "https://nicole-calendar-app.netlify.app"; // Replace with your actual Netlify app URL
 
 const api = axios.create({
   baseURL,
