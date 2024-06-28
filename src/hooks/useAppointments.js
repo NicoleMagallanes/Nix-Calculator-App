@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import {
   fetchAppointments,
   createAppointment,
-  updateAppointment,
-  deleteAppointment,
+  updateAppointment as apiUpdateAppointment,
+  deleteAppointment as apiDeleteAppointment,
 } from "../services/api";
 
 const useAppointments = () => {
@@ -26,8 +26,10 @@ const useAppointments = () => {
   );
 
   const updateAppointment = useMutation(
-    (id, updatedFields) =>
-      updateAppointment(id, updatedFields).then((res) => res.data),
+    (payload) => {
+      const { id, updatedFields } = payload;
+      return apiUpdateAppointment(id, updatedFields).then((res) => res.data);
+    },
     {
       onSuccess: () => {
         queryClient.invalidateQueries("appointments");
@@ -35,7 +37,7 @@ const useAppointments = () => {
     }
   );
 
-  const deleteAppointment = useMutation((id) => deleteAppointment(id), {
+  const deleteAppointment = useMutation((id) => apiDeleteAppointment(id), {
     onSuccess: () => {
       queryClient.invalidateQueries("appointments");
     },
