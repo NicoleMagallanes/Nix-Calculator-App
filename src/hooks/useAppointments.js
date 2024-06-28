@@ -13,14 +13,14 @@ const useAppointments = () => {
     data: appointments,
     isLoading,
     isError,
-  } = useQuery("appointments", fetchAppointments);
+  } = useQuery("/appointments", fetchAppointments);
 
   const addAppointment = useMutation(
     (newAppointment) =>
       createAppointment(newAppointment).then((res) => res.data),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("appointments");
+        queryClient.invalidateQueries("/appointments");
       },
     }
   );
@@ -32,14 +32,14 @@ const useAppointments = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("appointments");
+        queryClient.invalidateQueries("/appointments");
       },
     }
   );
 
   const deleteAppointment = useMutation((id) => apiDeleteAppointment(id), {
     onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
+      queryClient.invalidateQueries("/appointments");
     },
   });
 
